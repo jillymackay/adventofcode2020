@@ -21,14 +21,29 @@ sample %>%
   mutate(rlett = str_extract(rlett, "[abc]")) %>% 
   mutate(v1 = str_count(pword, rlett),
          valid = case_when(v1 >= rmin & v1 <= rmax ~ "Valid",
-                           TRUE ~ "Not Valid"))
-
-pass %>%   
-  separate(col = rnum, into = c("rmin", "rmax"), sep = "-") %>%
-  mutate(rlett = str_extract(rlett, "[abc]")) %>% 
-  mutate(v1 = str_count(pword, rlett),
-         valid = case_when(v1 >= rmin & v1 <= rmax ~ "Valid",
                            TRUE ~ "Not Valid")) %>% 
   filter(valid == "Valid") %>% 
   tally()
-  
+
+
+# I do not understand why this doesn't work
+pass %>%   
+  separate(col = rnum, into = c("rmin", "rmax"), sep = "-") %>%
+  mutate(rlett = str_extract(rlett, "[a-z]")) %>% 
+  mutate(lettinst = str_count(pword, rlett),
+         valid = case_when(lettinst >= rmin & lettinst <= rmax ~ "Valid",
+                           TRUE ~ "Not Valid")) %>% 
+  filter(valid == "Valid") %>% 
+  tally()
+
+
+
+# When in doubt - look at what Ian did ...
+
+
+ipass <-   read_csv("input.txt", col_names = "policy") %>% 
+  extract(policy,
+          c("min", "max", "letter", "password"),
+                   "(\\d+)-(\\d+) (.): *(.*)",
+                   convert = TRUE
+)
