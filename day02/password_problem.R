@@ -24,7 +24,7 @@ fail_pass <- read.table("~/data/adventofcode2020/day02/input.txt") %>%
   rename(rnum = V1,
          rlett = V2,
          pword = V3) %>% 
-  separate(col = rnum, into = c("rmin", "rmax"), sep = "-") %>% 
+  separate(col = rnum, into = c("rmin", "rmax"), sep = "-", convert = TRUE) %>% 
   mutate(rlett = str_extract(rlett, "[a-z]"))
 
 

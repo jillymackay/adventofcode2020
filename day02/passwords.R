@@ -112,3 +112,35 @@ fail_pass <- read.table("~/data/adventofcode2020/day02/input.txt") %>%
          pword = V3) %>% 
   separate(col = rnum, into = c("rmin", "rmax"), sep = "-") %>% 
   mutate(rlett = str_extract(rlett, "[a-z]"))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Stage 2
+
+
+sample %>% 
+  separate(col = rnum, into = c("rmin", "rmax"), sep = "-", convert = TRUE) %>%
+  mutate(rlett = str_extract(rlett, "[abc]")) %>%
+  mutate(v1 = (str_locate_all(pword, rlett)),
+         v2 = list(rmin) %in% v1)
+  
+  
+  mutate(v1 = str_count(pword, rlett),
+         valid = case_when(v1 >= rmin & v1 <= rmax ~ "Valid",
+                           TRUE ~ "Not Valid")) %>% 
+  filter(valid == "Valid") %>% 
+  tally()
