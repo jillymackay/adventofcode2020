@@ -41,9 +41,74 @@ pass %>%
 # When in doubt - look at what Ian did ...
 
 
-ipass <-   read_csv("input.txt", col_names = "policy") %>% 
+ipass <-   read_csv("~/data/adventofcode2020/day02/input.txt", col_names = "policy") %>% 
   extract(policy,
           c("min", "max", "letter", "password"),
                    "(\\d+)-(\\d+) (.): *(.*)",
                    convert = TRUE
 )
+# this processes the data as far as I did to line 33
+
+ipass %>% 
+  mutate(count = map2_int(password, letter, str_count)) %>% 
+  filter(count >= min & count <= max)
+
+# s my str_count isn't working right ....
+
+# why .......
+
+
+
+pass %>%   
+  separate(col = rnum, into = c("rmin", "rmax"), sep = "-") %>%
+  mutate(rlett = str_extract(rlett, "[a-z]")) %>% 
+  mutate(lettinst = map2_int(pword, rlett, str_count)) %>% 
+  filter(lettinst >= rmin & lettinst <= rmax) %>% 
+  tally()
+
+# Okay so no - its probably my data processing???
+
+
+
+
+ipass %>%
+  rename(rmin = min,
+         rmax = max,
+         rlett = letter, 
+         pword = password)  %>% 
+  mutate(lettinst = str_count(pword, rlett),
+       valid = case_when(lettinst >= rmin & lettinst <= rmax ~ "Valid",
+                         TRUE ~ "Not Valid")) %>% 
+  filter(valid == "Valid") %>% 
+  tally()
+
+
+# So my process works, its just my reading of the data????
+
+
+pass <- read_csv("~/data/adventofcode2020/day02/input.txt", col_names = "pass")
+p1 <- read.table("~/data/adventofcode2020/day02/input.txt") %>% 
+  rename(rnum = V1,
+         rlett = V2,
+         pword = V3) %>% 
+  separate(col = rnum, into = c("rmin", "rmax"), sep = "-") %>% 
+  mutate(rlett = str_extract(rlett, "[a-z]"))
+
+
+
+
+
+
+working_pass <- read_csv("~/data/adventofcode2020/day02/input.txt", col_names = "pass") %>% 
+  extract(policy,
+          c("rmin", "rmax", "rlett", "rpass"),
+          "(\\d+)-(\\d+) (.): *(.*)",
+          convert = TRUE
+  )
+
+fail_pass <- read.table("~/data/adventofcode2020/day02/input.txt") %>% 
+  rename(rnum = V1,
+         rlett = V2,
+         pword = V3) %>% 
+  separate(col = rnum, into = c("rmin", "rmax"), sep = "-") %>% 
+  mutate(rlett = str_extract(rlett, "[a-z]"))
